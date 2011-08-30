@@ -20,7 +20,7 @@
 						
 			$tepmOwnUser = new User();
 						
-			$randomPassword = create_random_value(12);
+			$randomPassword = generateRandomString(12);
 			$username = static::findFreeRandomUsername($extAuth->getName());
 			$userId = $um->createUser($username, $randomPassword, $tepmOwnUser);
 			if($userId !== false) {
