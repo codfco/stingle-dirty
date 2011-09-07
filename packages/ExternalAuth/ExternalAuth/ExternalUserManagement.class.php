@@ -36,7 +36,7 @@
 		 */
 		private static function findFreeRandomUsername($prefix){
 			$um = Reg::get(ConfigManager::getConfig("Users", "Users")->Objects->UserManagement);
-			$possibleUsername = $prefix . "_" . create_random_value(6);
+			$possibleUsername = $prefix . "_" . generateRandomString(6);
 			if(!$um->isUserExists($possibleUsername, 0)){
 				return $possibleUsername; 
 			}
