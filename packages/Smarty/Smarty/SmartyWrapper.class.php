@@ -216,6 +216,13 @@ class SmartyWrapper extends Smarty {
 		array_push($this->plugins_dir, $pluginDir);
 	}
 	
+	/**
+	 * Set template
+	 * 
+	 * @param string $template
+	 * @throws InvalidArgumentException
+	 * @throws RuntimeException
+	 */
 	public function setTemplate($template){
 		if(!is_dir($this->template_dir."templates/".$template)){
 			throw new InvalidArgumentException("Specified templates directory (".$this->template_dir."templates/".$template.") doesn't exist");
@@ -227,6 +234,14 @@ class SmartyWrapper extends Smarty {
 		
 		$this->templateExtends = $this->templatesConfig->templates->$template;
 		$this->template = $template;
+	}
+	
+	/**
+	 * Get current template name
+	 * @return string
+	 */
+	public function getTemplate(){
+		return $this->template;
 	}
 	
 	/**
