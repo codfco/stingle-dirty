@@ -404,4 +404,25 @@ function draw_hiddens_from_get_params($exclude_array = '') {
 function getValue($array, $key){
     return $array[$key];
 }
+
+function parse($text, $params = null){
+	if(!isset($text)){
+		return false;
+	}
+	else {
+		if(empty($params)){
+			return $text;
+		}
+		else {
+			$patterns = array();
+			$replacements = array();
+			foreach($params as $pattern=>$replacement){
+				$patterns[] = '/\['.$pattern.'\]/';
+				$replacements[] = $replacement;
+			}
+			return preg_replace($patterns, $replacements, $text);
+		}
+	}
+	return false;
+}
 ?>
