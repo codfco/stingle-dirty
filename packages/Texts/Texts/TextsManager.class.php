@@ -1,17 +1,11 @@
 <?
-/**
- * Texts manager class.
- * @name Texts
- */
-class  TextsManager extends DbAccessor{
-
-	const EMPTY_TEXT_FLAG = "[@empty@]";
-
-	private $host; 		//Host object
-	private $language; //Language object
-
-	public  function __construct(Host $host, Language $language, $dbInstanceKey = null){
+class TextsManager extends DbAccessor{
+	
+	const TBL_TEXTS = "texts";
+	
+	public  function __construct($dbInstanceKey = null){
 		parent::__construct($dbInstanceKey);
+<<<<<<< HEAD
 
 		$this->host = $host;
 		$this->language = $language;
@@ -106,50 +100,82 @@ class  TextsManager extends DbAccessor{
 							RIGHT JOIN ".Tbl::get('TBL_TEXTS_ALIASES', 'Text') ." ta ON tv.id = ta.value_id
 							WHERE ta.host_language = '$host_lang_id' AND tv.text_id = '$text_id'");
 		if($this->query->countRecords() == 1){
+=======
+	}
+	
+	private function textNameExists($textName, $groupName, $cacheMinutes = null){
+		if(empty($textName)){
+			throw new InvalidArgumentException("\$textName have to be non empty");
+		}
+		if(empty($groupName)){
+			throw new InvalidArgumentException("\$groupName have to be non empty");
+		}
+		
+		$group = Reg::get(ConfigManager::getConfig("Texts")->Objects->TextsGroupManager)->getGroupByName($groupName, $cacheMinutes);
+		
+		$this->query->exec("SELECT count(*) as `count` 
+								FROM `".Tbl::get('TBL_TEXTS') ."` 
+								WHERE `name`='$textName' AND `group_id`='{$group->id}'", $cacheMinutes);
+		
+		if($this->query->fetchField("count") == 1){
+>>>>>>> 00223d1... Halfly done new Texts Manager
 			return true;
 		}
 		return false;
-
-
-	}
-	public function addAliases($value_id, $hl_ids){
-		if(!is_numeric($value_id)){
-			throw new InvalidArgumentException("value_id argument mast be integer");
-		}
-		$this->query->exec("DELETE FROM `". Tbl::get('TBL_TEXTS_ALIASES', 'Text') ."` WHERE value_id=".$value_id);
-		if(!empty($hl_ids)){
-			if(!is_array($hl_ids)){
-				throw new InvalidArgumentException("hl_ids mast be an array");
-			}
-			foreach ($hl_ids as $hl_id){
-				$values[]= "('$value_id','".intval($hl_id)."')";
-			}
-			$this->query->exec("INSERT INTO `". Tbl::get('TBL_TEXTS_ALIASES', 'Text') ."` (value_id, host_language)
-							VALUES ".implode(", ",$values)."");
-		}
 	}
 	
+<<<<<<< HEAD
 	public function getTextValueId($text_id, $host_language_id){
 		if(!is_numeric($text_id) or !is_numeric($host_language_id)){
 			throw new InvalidIntegerArgumentException("text id and host_language_id should be an integer. text_id: ". $text_id ." and host_lang_id:".$host_language_id." given.");
 		}
 		$this->query->exec("SELECT id FROM `".Tbl::get('TBL_TEXTS_VALUES', 'Text') ."` WHERE `text_id` = {$text_id} AND `host_language`={$host_language_id}");
 		return $this->query->fetchField("id");
-	}
-
-	private function insertTextValue($text_id, $host_language_id, $value){
-		if(!is_numeric($text_id) or !is_numeric($host_language_id)){
-			throw new InvalidIntegerArgumentException("text id and host_language_id should be an integer. text_id: ". $text_id ." and host_lang_id:".$host_language_id." given.");
+=======
+	public function getTextById($textId, $cacheMinutes = null){
+		if(empty($textId)){
+			throw new InvalidArgumentException("\$textId have to be non empty");
 		}
-		$this->query->exec("INSERT INTO `".Tbl::get('TBL_TEXTS_VALUES', 'Text') ."` (`text_id`,`value`,`host_language`)
-							VALUES ('$text_id','".mysql_real_escape_string($value)."','$host_language_id') 
-							ON DUPLICATE KEY UPDATE `value`='".mysql_real_escape_string($value)."'");
-	}
-
-	public function deleteVal($val_id){
-		if(!is_numeric($val_id)){
-			throw new InvalidIntegerArgumentException("value id should be an integer. ". $val_id ." given");
+		if(!is_numeric($textId)){
+			throw new InvalidArgumentException("\$textId have to be integer");
 		}
+		
+		$this->query->exec("SELECT * FROM `".Tbl::get('TBL_TEXTS')  ."` 
+								WHERE `id` = '{$textId}'", $cacheMinutes);
+		
+		if($this->query->countRecords() == 0){
+			throw new RuntimeException("There is no text with id $textId");
+		}
+		
+		return $this->getTextObjectFromData($this->query->fetchRecord(), $cacheMinutes);
+>>>>>>> 00223d1... Halfly done new Texts Manager
+	}
+	
+	public function getTextByName($textName, $groupName, $cacheMinutes = null){
+		if(empty($textName)){
+			throw new InvalidArgumentException("\$textName have to be non empty");
+		}
+		if(empty($groupName)){
+			throw new InvalidArgumentException("\$groupName have to be non empty");
+		}
+		
+		$group = Reg::get(ConfigManager::getConfig("Texts")->Objects->TextsGroupManager)->getGroupByName($groupName, $cacheMinutes);
+		
+		$this->query->exec("SELECT * FROM `".Tbl::get('TBL_TEXTS')  ."` 
+								WHERE `name` = '{$textName}' AND `group_id`='{$group->id}'", $cacheMinutes);
+		
+		if($this->query->countRecords() == 0){
+			throw new RuntimeException("There is no text with name $textName");
+		}
+		
+		return $this->getTextObjectFromData($this->query->fetchRecord(), $cacheMinutes);
+	}
+	
+	public function addText(Text $text, TextsGroup $group){
+		if(empty($text->name)){
+			throw new InvalidArgumentException("You have to specify name for new text");
+		}
+<<<<<<< HEAD
 		$this->query->exec("DELETE FROM `".Tbl::get('TBL_TEXTS_VALUES', 'Text') ."` WHERE id=".$val_id);
 	}
 
@@ -205,8 +231,47 @@ class  TextsManager extends DbAccessor{
 							WHERE `text_id`  = $text_id AND hl.`host_id` = $host_id AND hl.`lang_id` = $lang_id",$cacheMinutes);
 		if($this->query->countRecords()){
 			return $this->query->fetchField("value");
+=======
+		if(empty($group->id)){
+			throw new InvalidArgumentException("Group ID have to be specified");
 		}
+		if(!is_numeric($group->id)){
+			throw new InvalidArgumentException("Group ID have to be integer");
+		}
+		$this->query->exec("INSERT INTO `".Tbl::get('TBL_TEXTS') . "` (`group_id`, `name`, `description`) 
+								VALUES('{$group->id}', '{$text->name}', '{$text->description}')");
+		return $this->query->affected();
 	}
+	
+	public function updateText(Text $text){
+		if(empty($text->id)){
+			throw new InvalidArgumentException("Text ID have to be specified");
+		}
+		if(!is_numeric($text->id)){
+			throw new InvalidArgumentException("Text ID have to be integer");
+		}
+		$this->query->exec("UPDATE `".Tbl::get('TBL_TEXTS') . "` SET 
+								`group_id`='{$text->group->id}', 
+								`name`='{$text->name}', 
+								`description`='{$text->description}', 
+							WHERE `id`='{$text->id}'");
+		return $this->query->affected();
+	}
+	
+	public function deleteText(Texts $text){
+		if(empty($text->id)){
+			throw new InvalidArgumentException("Text ID have to be specified");
+		}
+		if(!is_numeric($text->id)){
+			throw new InvalidArgumentException("Text ID have to be integer");
+>>>>>>> 00223d1... Halfly done new Texts Manager
+		}
+		
+		$this->query->exec("DELETE FROM `".Tbl::get('TBL_TEXTS') . "` WHERE `id`='{$text->id}'");
+		
+		return $this->query->affected();
+	}
+<<<<<<< HEAD
 
 	/*private function getDefaultText($text_id){
 		if(!is_numeric($text_id)){
@@ -231,6 +296,16 @@ class  TextsManager extends DbAccessor{
 			}
 		}
 		return false;
+=======
+	
+	
+	protected function getTextObjectFromData($data, $cacheMinutes = null){
+		$text = new Text();
+		$text->id = $data['id'];
+		$text->group = Reg::get(ConfigManager::getConfig("Texts")->Objects->TextsGroupManager)->getGroupById($data['group_id'], $cacheMinutes);
+		$text->name = $data['name'];
+		$text->description = $data['description'];
+>>>>>>> 00223d1... Halfly done new Texts Manager
 	}
 }
 ?>
