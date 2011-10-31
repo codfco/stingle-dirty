@@ -157,7 +157,14 @@ class SmartyWrapper extends Smarty {
 	public $chunksPath = 'tpl/incs/chunks/';
 	public $snippetsPath = 'tpl/incs/snippets/';
 	
+
 	
+	public function isInitialized(){
+		if($this->isInitialized){
+			return true;
+		}
+		return false;
+	}
 
 	public function initialize($module, $page, $config){
 		if(empty($module) or empty($page)){
