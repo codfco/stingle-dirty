@@ -1,8 +1,6 @@
 <?
 $CONFIG['site']['error_reporting'] = E_ALL ^E_NOTICE ^E_DEPRECATED;
 
-$CONFIG['site']['domain_name'] = "mysite";
-
 $CONFIG['site']['site_id'] = 'mysite';
 $CONFIG['site']['developer_mail'] = "me@mysite.com";
 
