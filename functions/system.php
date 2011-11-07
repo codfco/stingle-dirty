@@ -1,7 +1,5 @@
 <?
 function default_exception_handler(Exception $e){
-	global $site_name;
-	
 	HookManager::callHook('NoDebugExceptionHandler', array('e' => $e));
 	
 	$config = ConfigManager::getGlobalConfig();
@@ -16,14 +14,12 @@ function default_exception_handler(Exception $e){
 	}
 	
 	if($config->Debug->send_email_on_exception and function_exists("send_mail")){
-		@send_mail($config->site->developer_mail, "Exception on $site_name", format_exception($e, true));
+		@send_mail($config->site->developer_mail, "Exception", format_exception($e, true));
 	}
 	exit;
 }
 
 function default_error_handler($errno, $errstr, $errfile, $errline){
-	global $site_name;
-	
 	$config = ConfigManager::getGlobalConfig();
 	
 	if ( $errno === E_RECOVERABLE_ERROR or $errno === E_WARNING ) {
@@ -38,7 +34,7 @@ function default_error_handler($errno, $errstr, $errfile, $errline){
 		}
 		
 		if($config->Debug->send_email_on_exception and function_exists("send_mail")){
-			@send_mail($config->site->developer_mail, "Error on $site_name", format_error($errno, $errstr, $errfile, $errline, true));
+			@send_mail($config->site->developer_mail, "Error", format_error($errno, $errstr, $errfile, $errline, true));
 		}
 		exit;
 	}
