@@ -512,6 +512,7 @@ class PackageManager {
 	 * 
 	 * @param string $packageName
 	 * @param string $pluginName
+	 * @return Loader
 	 */
 	private function getPluginLoader($packageName, $pluginName){
 		if(empty($packageName)){
