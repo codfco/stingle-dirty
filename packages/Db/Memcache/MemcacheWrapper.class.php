@@ -87,18 +87,14 @@ class MemcacheWrapper
 	    $items = $this->memcache->getExtendedStats('items');
 	    foreach($allSlabs as $server => $slabs) {
     	    foreach($slabs AS $slabId => $slabMeta) {
-    	        $cdump = $this->memcache->getExtendedStats('cachedump',(int)$slabId);
+    	    	if (!is_numeric($slabId)){
+					continue;
+				}
+				$cdump = $this->memcache->getExtendedStats('cachedump',(int)$slabId, 1000000);
     	        foreach($cdump AS $server => $entries) {
     	            if($entries) {
         	            foreach($entries AS $eName => $eData) {
         	            	array_push($list, $eName);
-        	                /*$list[$eName] = array(
-        	                     'key' => $eName,
-        	                     'server' => $server,
-        	                     'slabId' => $slabId,
-        	                     'detail' => $eData,
-        	                     'age' => $items[$server]['items'][$slabId]['age'],
-        	                     );*/
         	            }
     	            }
     	        }
