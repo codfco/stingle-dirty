@@ -30,7 +30,7 @@ error_reporting($config->site->error_reporting);
 session_name($config->site->site_id);
 
 session_start();
-ob_start();
+ob_start('stingleOutputHandler');
 
 Cgi::setMode(defined("IS_CGI"));
 Debug::setMode($config->Debug->enabled);
