@@ -78,7 +78,11 @@ function determine_size_units($size = 0){
 }
 
 function get_age ($birthday){
-	list($Year, $Month, $Day) = explode("-",$birthday);
+	$explodedArray = explode("-",$birthday);
+	if(count($explodedArray) != 3){
+		return false;
+	}
+	list($Year, $Month, $Day) = $explodedArray;
 
 	$YearDiff = date("Y") - $Year;
 	if(date("m") < $Month || (date("m") == $Month && date("d") < $Day)){
@@ -312,7 +316,7 @@ function smart_cut($string, $char_limit, $trailing_chars = '...'){
 	if(empty($string) or $char_limit < 1){
 		return '';
 	}
-	$arr = split(' ', $string);
+	$arr = explode(' ', $string);
 	$ret_str = '';
 	$lend = 0;
 	foreach($arr as $word){
