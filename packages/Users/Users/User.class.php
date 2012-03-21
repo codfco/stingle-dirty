@@ -198,11 +198,14 @@ class User
 	}
 
 	public function isAuthorized(){
+		return !$this->isEmpty();
+	}
+	public function isEmpty(){
 		if($this->id === null){
-			return false;
+			return true;
 		}
 		else{
-			return true;
+			return false;
 		}
 	}
 
