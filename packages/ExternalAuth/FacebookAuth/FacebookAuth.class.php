@@ -118,7 +118,7 @@ class FacebookAuth extends DbAccessor implements ExternalAuth
 		$othersArray = array(); 
 		foreach ($fbUser as $key => $field) {
 			if($field != null) {
-				$othersArray[$key] = $field;
+				$othersArray[$key] = addslashes($field);
 			}
 		}
 		return 	$othersArray;
@@ -134,15 +134,15 @@ class FacebookAuth extends DbAccessor implements ExternalAuth
 	private function createExternalUser($fbUser){
 		$extUser = new ExternalUser();
 		if(!empty($fbUser->first_name)) {
-			$extUser->firstName = $fbUser->first_name;
+			$extUser->firstName = addslashes($fbUser->first_name);
 			$fbUser->first_name = null;
 		}
 		if(!empty($fbUser->last_name)){
-			$extUser->lastName = $fbUser->last_name;
+			$extUser->lastName = addslashes($fbUser->last_name);
 			$fbUser->last_name = null;
 		}
 		if(!empty($fbUser->email)){
-			$extUser->email = $fbUser->email;
+			$extUser->email = addslashes($fbUser->email);
 			$fbUser->email = null;
 		}
 		if(!empty($fbUser->birthday)){
