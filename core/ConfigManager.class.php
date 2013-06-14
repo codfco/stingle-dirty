@@ -60,6 +60,9 @@ class ConfigManager
 		if($pluginName === null){
 			$pluginName = $packageName;
 		}
+		if(!is_object(static::$cache)){
+			static::$cache = new Config();
+		}
 		
 		if(isset(static::$cache->$packageName) and isset(static::$cache->$packageName->$pluginName)){
 			return static::$cache->$packageName->$pluginName;
@@ -78,6 +81,9 @@ class ConfigManager
 		
 		if(isset(static::$globalConfig->$packageName) and isset(static::$globalConfig->$packageName->$pluginName)){
 			$globalConfig = static::$globalConfig->$packageName->$pluginName;
+		}
+		else{
+			$globalConfig = new Config();
 		}
 		
 		$result = static::mergeConfigs($globalConfig, $defaultConfigObj);
@@ -121,7 +127,17 @@ class ConfigManager
 		return $slaveConfig;
 	}
 	
+	/**
+	 * Add config into existing one
+	 * 
+	 * @param array $where
+	 * @param string $key
+	 * @param string $value
+	 */
 	public static function addConfig($where, $key, $value){
+		if(!is_object(static::$cache)){
+			static::$cache = new Config();
+		}
 		$currentObj = &static::$globalConfig;
 		$currentCache = &static::$cache;
 		
@@ -144,5 +160,28 @@ class ConfigManager
 			$currentCache = null;
 		}
 	}
+	/**
+	 * Function get sub config from Global config
+	 * @param Array $location
+	 * @throws InvalidArgumentException
+	 * @return Config
+	 */
+	public static function getSubConfig($location = array(), Config $sourceConfig = null){
+		if(!is_array($location)){
+			throw new InvalidArgumentException("Given argument must be array");
 }
-?>
+		if($sourceConfig == null){
+			$currentObj = &static::$globalConfig;
+		}
+		else{
+			$currentObj = &$sourceConfig;
+		}
+		foreach ($location as $this_where){
+			if(!isset($currentObj->$this_where)){
+				$currentObj->$this_where = new Config();
+			}
+			$currentObj = &$currentObj->$this_where;
+		}
+		return $currentObj;
+	}
+}

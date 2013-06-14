@@ -47,4 +47,11 @@ function shutdown(){
 		geoip_close($gi);
 	}
 }
+
+function stingleOutputHandler($buffer){
+	$hookArgs = array( 'buffer' => &$buffer );
+	
+	HookManager::callHook("onOutputHandler", $hookArgs);
+	return $buffer;
+}
 ?>
