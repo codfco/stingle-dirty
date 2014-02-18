@@ -273,7 +273,7 @@ class PackageManager {
 	 * @param integer $currentSlaveKey
 	 * @param array $passedKeys
 	 */
-	private function checkIfPluginExistsInDependencyChain($dependencyArray, $slaveKeyToFind, $currentSlaveKey = null, $passedKeys = array()){
+	private function checkIfPluginExistsInDependencyChain(&$dependencyArray, &$slaveKeyToFind, $currentSlaveKey = null, &$passedKeys = array()){
 		if($currentSlaveKey === null){
 			$currentSlaveKey = $slaveKeyToFind;
 		}
@@ -284,7 +284,7 @@ class PackageManager {
 		else{
 			foreach(array_keys($dependencyArray["slaves"], $dependencyArray["masters"][$currentSlaveKey]) as $masterKey){
 				if(!in_array($masterKey, $passedKeys)){
-					$exists = $this->checkIfPluginExistsInDependencyChain(&$dependencyArray, &$slaveKeyToFind, $masterKey, &$passedKeys);
+					$exists = $this->checkIfPluginExistsInDependencyChain($dependencyArray, $slaveKeyToFind, $masterKey, $passedKeys);
 					if($exists === true){
 						return true;
 					}
@@ -304,7 +304,8 @@ class PackageManager {
 		for ($i=0;$i<count($dependencyArray["masters"]);$i++){
 			$masterPlugin = $dependencyArray["masters"][$i];
 			$slavePlugin = $dependencyArray["slaves"][$i];
-			if(!$this->searchForDependencyTreeConnection($dependencyArray, $masterPlugin, $slavePlugin, array($i))){
+			$arrayI = array($i);
+			if(!$this->searchForDependencyTreeConnection($dependencyArray, $masterPlugin, $slavePlugin, $arrayI)){
 				array_push($simplifiedDependencyArray["masters"], $masterPlugin);
 				array_push($simplifiedDependencyArray["slaves"], $slavePlugin);
 			}
@@ -322,7 +323,7 @@ class PackageManager {
 	 * @param string $slave
 	 * @param array $notThisKey
 	 */
-	private function searchForDependencyTreeConnection($dependencyArray, $master, $slave, $notThisKey = array()){
+	private function searchForDependencyTreeConnection($dependencyArray, $master, $slave, &$notThisKey = array()){
 		$slaveKeys = array_keys($dependencyArray["slaves"], $slave);
 		
 		foreach ($slaveKeys as $slaveKey){
@@ -332,7 +333,7 @@ class PackageManager {
 				}
 				else{
 					array_push($notThisKey, $slaveKey);
-					$found = $this->searchForDependencyTreeConnection($dependencyArray, $master, $dependencyArray["masters"][$slaveKey], &$notThisKey);
+					$found = $this->searchForDependencyTreeConnection($dependencyArray, $master, $dependencyArray["masters"][$slaveKey], $notThisKey);
 					if($found === true){
 						return true;
 					}
@@ -350,7 +351,7 @@ class PackageManager {
 	 * @param array $pluginsByPriority
 	 * @param integer $currentPriority
 	 */
-	private function getPluginsByPriorityTable($dependencyArray, $masterPlugins, $pluginsByPriority = array(), $currentPriority = 0){
+	private function getPluginsByPriorityTable($dependencyArray, $masterPlugins, &$pluginsByPriority = array(), $currentPriority = 0){
 		foreach ($masterPlugins as $masterPlugin){
 			if(!in_array($masterPlugin[1], array_keys($pluginsByPriority)) or $pluginsByPriority[$masterPlugin[1]][1] < $currentPriority){
 				$pluginsByPriority[$masterPlugin[1]] = array($masterPlugin[0], $currentPriority);
@@ -362,7 +363,7 @@ class PackageManager {
 				// Get slave value
 				$slavePlugin = $dependencyArray["slaves"][$masterKey];
 				
-				$this->getPluginsByPriorityTable($dependencyArray, array($slavePlugin), &$pluginsByPriority, $currentPriority + 1);
+				$this->getPluginsByPriorityTable($dependencyArray, array($slavePlugin), $pluginsByPriority, $currentPriority + 1);
 			}
 		}
 		return $pluginsByPriority;
@@ -375,7 +376,7 @@ class PackageManager {
 	 * @param array $depList
 	 * @param array $depListSeparate
 	 */
-	private function getDependencyArray($plugins, $depList = array(), $depListSeparate = null){
+	private function getDependencyArray($plugins, &$depList = array(), &$depListSeparate = null){
 		// Define arrays of masters and slaves if not defined
 		if(empty($depList)){
 			$depListSeparate = array("masters" => array(), "slaves" => array());
@@ -399,7 +400,7 @@ class PackageManager {
 						array_push($depListSeparate["slaves"], array($packageName, $pluginName));
 						
 						// Try to go deeper in case this dependency has dependencies too
-						$this->getDependencyArray(array(array($depPackage, $depPlugin)), &$depList, &$depListSeparate);
+						$this->getDependencyArray(array(array($depPackage, $depPlugin)), $depList, $depListSeparate);
 					}
 				}
 			}
