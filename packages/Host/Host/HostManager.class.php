@@ -12,7 +12,8 @@ class HostManager{
 		}
 		else{			
 			$originalHostName = $hostName;
-			$parentHostName = array_pop(explode(".", $hostName, 2));
+			$explodedArr = explode(".", $hostName, 2);
+			$parentHostName = array_pop($explodedArr);
 			$wildcardHostName = "*.". $parentHostName;
 			
 			$sql->exec("SELECT * FROM `".Tbl::get('TBL_HOSTS', 'Host')  ."` WHERE `host` = '{$wildcardHostName}'", $cacheMinutes);
