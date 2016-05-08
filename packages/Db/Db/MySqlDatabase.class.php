@@ -48,7 +48,7 @@ class MySqlDatabase
 	 * @param $persistency
 	 * @return unknown_type
 	 */
-	public function __construct($server, $username, $password, $db_name = null, $persistency = true)
+	public function __construct($server, $username, $password, $db_name = null, $persistency = false)
 	{
 		if($persistency){
 			$this->link = @mysql_pconnect($server, $username, $password);

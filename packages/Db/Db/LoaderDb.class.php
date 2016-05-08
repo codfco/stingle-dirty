@@ -13,7 +13,8 @@ class LoaderDb extends Loader{
 		MySqlDbManager::createInstance(	$this->config->AuxConfig->host, 
 										$this->config->AuxConfig->user, 
 										$this->config->AuxConfig->password, 
-										$this->config->AuxConfig->name);
+										$this->config->AuxConfig->name,
+										$this->config->AuxConfig->isPersistent);
 		$this->db = MySqlDbManager::getDbObject();
 		$this->db->setConnectionEncoding($this->config->AuxConfig->encoding);
 		Reg::register($this->config->Objects->Db, $this->db);

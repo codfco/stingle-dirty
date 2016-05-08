@@ -4,6 +4,7 @@ $defaultConfig = array(
 												'user' => 'root',
 												'password' => '',
 												'name' => '',
+												'isPersistent' => false,
 												'encoding' => 'UTF8'), 
 						'Objects' => array("Db" => "db", "Query" => "sql")
 					);
