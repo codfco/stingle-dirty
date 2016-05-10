@@ -29,7 +29,7 @@ class MySqlDbManager
      *
      * @return mixed Automatically generated key for current instance
      */
-    public static function createInstance($server, $username, $password, $db_name, $persistency = true)
+    public static function createInstance($server, $username, $password, $db_name, $persistency = false)
     {
     	$key = static::generateInstanceKey($server);
 		try{
