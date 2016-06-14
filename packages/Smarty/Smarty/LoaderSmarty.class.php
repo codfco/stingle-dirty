@@ -21,7 +21,7 @@ class LoaderSmarty extends Loader{
 	}
 	
 	public function hookSmartyDisplay(){
-		$this->smarty->display();
+		$this->smarty->output();
 	}
 }
 ?>

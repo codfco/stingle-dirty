@@ -1,13 +1,9 @@
 <?
 class Config{
 	
-	private $config;
-	
-	public function __construct($CONFIG = null){
+	public function __construct(array $CONFIG = null){
 		if($CONFIG !== null){
-			$this->config = $CONFIG;
-			
-			$this->parseConfig($this->config);
+			$this->parseConfig($CONFIG);
 		}
 	}
 	
@@ -45,7 +41,7 @@ class Config{
 		return $returnArray;
 	}
 	
-	private function parseConfig($configArray){
+	private function parseConfig(array $configArray){
 		foreach($configArray as $key=>$value){
 			if(is_array($value)){
 				$this->$key = new Config($configArray[$key]);
@@ -54,7 +50,6 @@ class Config{
 				$this->$key = $value;
 			}
 		}
-		unset($this->config);
 	}
 }
 ?>
