@@ -61,6 +61,10 @@ class ConfigManager
 			$pluginName = $packageName;
 		}
 		
+		if(!is_object(static::$cache)){
+			static::$cache = new Config();
+		}
+		
 		if(isset(static::$cache->$packageName) and isset(static::$cache->$packageName->$pluginName)){
 			return static::$cache->$packageName->$pluginName;
 		}
