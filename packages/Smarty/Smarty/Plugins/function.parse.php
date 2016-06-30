@@ -1,4 +1,4 @@
-<?php
+<?
 /**
  * Smarty plugin
  * @package Smarty
@@ -13,3 +13,4 @@ function smarty_function_parse($params, &$smarty){
 		return parse($text, $params);
 	}
 }
+?>

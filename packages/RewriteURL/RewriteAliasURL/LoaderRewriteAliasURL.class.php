@@ -20,7 +20,7 @@ class LoaderRewriteAliasURL extends Loader{
 		$rewriteURLconfig = $this->packageManager->getPluginConfig("RewriteURL", "RewriteURL");
 		$hostConfig = ConfigManager::getConfig("Host","Host");
 		
-		$this->rewriteAliasURL =  new RewriteAliasURL($rewriteURLconfig, $this->aliasMap->getAliasMap(Reg::get($hostConfig->Objects->Host)));
+		$this->rewriteAliasURL =  new RewriteAliasURL($rewriteURLconfig->AuxConfig, $this->aliasMap->getAliasMap(Reg::get($hostConfig->Objects->Host)));
 		Reg::register($this->config->Objects->rewriteAliasURL, $this->rewriteAliasURL);
 	}
 	
