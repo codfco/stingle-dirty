@@ -73,10 +73,6 @@ class MailSender
 			$headers = $this->createHeaders($mail);
 		}
 		
-		echo $to . "<br>";
-		echo $mail->subject . "<br>";
-		echo $mail->body . "<br>";
-		echo $mail->from . "<br>";
 		return @mail($to, $mail->subject, $mail->body, $headers, "-f$mail->from") ;
 	}
 	
