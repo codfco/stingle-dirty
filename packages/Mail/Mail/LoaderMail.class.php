@@ -9,4 +9,5 @@ class LoaderMail extends Loader{
 	protected function loadMail(){
 		Reg::register($this->config->Objects->Mail, new MailSender($this->config->AuxConfig));
 	}
+	
 }
