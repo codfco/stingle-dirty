@@ -14,7 +14,7 @@ function default_exception_handler(Exception $e){
 	}
 	
 	if($config->Debug->send_email_on_exception and function_exists("send_mail")){
-		@send_mail($config->site->developer_mail, "Exception", format_exception($e, true));
+		//@send_mail($config->site->developer_mail, "Exception", format_exception($e, true));
 	}
 	exit;
 }
@@ -34,7 +34,7 @@ function default_error_handler($errno, $errstr, $errfile, $errline){
 		}
 		
 		if($config->Debug->send_email_on_exception and function_exists("send_mail")){
-			@send_mail($config->site->developer_mail, "Error", format_error($errno, $errstr, $errfile, $errline, true));
+			//@send_mail($config->site->developer_mail, "Error", format_error($errno, $errstr, $errfile, $errline, true));
 		}
 		exit;
 	}
