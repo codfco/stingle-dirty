@@ -1,6 +1,7 @@
 <?
 function format_exception(Exception $e, $insert_pre = false){
-	$message =  "Message:\n" . $e->getMessage() . "\n\n" .
+	$message =  get_class($e) . "\n" .
+	"Message:\n" . $e->getMessage() . "\n\n" .
 	"File: " . $e->getFile() . " on line " . $e->getLine() . "\n\n" .
 	"Trace:\n" . $e->getTraceAsString() . "\n\n" .
 	"Get:\n". print_r($_GET,true) . "\n\n" .
